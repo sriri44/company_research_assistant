@@ -31,17 +31,19 @@ export function Sidebar({ onNavigate }: SidebarProps) {
   };
 
   return (
-    <div className="flex h-full w-full flex-col gap-6 bg-secondary/40 p-4">
-      <div className="px-1">
+    <div className="flex h-full min-h-0 w-full flex-col gap-6 bg-secondary/40 p-4">
+      <div className="shrink-0 px-1">
         <Logo />
       </div>
 
-      <Button className="w-full justify-start gap-2" onClick={handleNewResearch}>
+      <Button className="w-full shrink-0 justify-start gap-2" onClick={handleNewResearch}>
         <Plus className="size-4" />
         New Research
       </Button>
 
-      <div className="flex-1 overflow-y-auto scrollbar-thin">
+      {/* The sidebar itself never scrolls (fixed height/width) — only this
+          "Recent Session" list scrolls internally if it ever grows. */}
+      <div className="min-h-0 flex-1 overflow-y-auto scrollbar-thin">
         <p className="px-2 pb-2 text-xs font-medium uppercase tracking-wide text-muted-foreground">
           Recent Session
         </p>
@@ -67,7 +69,7 @@ export function Sidebar({ onNavigate }: SidebarProps) {
         )}
       </div>
 
-      <div className="flex flex-col gap-1 border-t border-border pt-3">
+      <div className="flex shrink-0 flex-col gap-1 border-t border-border pt-3">
         <NavLink
           to="/settings"
           onClick={onNavigate}

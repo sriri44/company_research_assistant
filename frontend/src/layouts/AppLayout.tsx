@@ -60,8 +60,8 @@ export function AppLayout() {
         )}
       </AnimatePresence>
 
-      <div className="flex min-w-0 flex-1 flex-col">
-        <header className="flex h-14 items-center gap-3 border-b border-border px-4 md:hidden">
+      <div className="flex min-h-0 min-w-0 flex-1 flex-col">
+        <header className="flex h-14 shrink-0 items-center gap-3 border-b border-border px-4 md:hidden">
           <Button
             variant="ghost"
             size="icon"
@@ -73,6 +73,11 @@ export function AppLayout() {
           <Logo iconOnly />
         </header>
 
+        {/* min-h-0 is load-bearing here: without it, a flex child defaults
+            to min-height:auto and won't shrink below its content's
+            intrinsic height, so long research results push this element
+            (and the whole page) taller than the viewport instead of
+            scrolling inside ResearchPage's own scroll area. */}
         <main className="min-h-0 flex-1">
           <Outlet />
         </main>

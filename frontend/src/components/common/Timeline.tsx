@@ -1,4 +1,5 @@
 import { motion } from "framer-motion";
+import { memo } from "react";
 
 import { ProgressStep } from "@/components/common/ProgressStep";
 import type { ResearchStep } from "@/types/research";
@@ -7,8 +8,10 @@ export interface TimelineProps {
   steps: ResearchStep[];
 }
 
-/** The research pipeline progress card shown while a session runs. */
-export function Timeline({ steps }: TimelineProps) {
+/** The research pipeline progress card shown while a session runs.
+ * Memoized so it only re-renders when `steps` actually changes, not on
+ * unrelated ResearchPage state updates (e.g. typing in the prompt). */
+function TimelineImpl({ steps }: TimelineProps) {
   return (
     <motion.div
       initial={{ opacity: 0, y: 12 }}
@@ -26,3 +29,5 @@ export function Timeline({ steps }: TimelineProps) {
     </motion.div>
   );
 }
+
+export const Timeline = memo(TimelineImpl);

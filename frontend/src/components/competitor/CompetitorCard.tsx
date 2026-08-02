@@ -1,5 +1,6 @@
 import { motion } from "framer-motion";
 import { Swords } from "lucide-react";
+import { memo } from "react";
 
 import { Card, CardContent } from "@/components/ui/card";
 import type { Competitor } from "@/types/competitor";
@@ -10,8 +11,10 @@ export interface CompetitorCardProps {
 }
 
 /** One competitor row/card — similarity score rendered as a compact
- * progress bar for quick visual scanning across a grid. */
-export function CompetitorCard({ competitor, index = 0 }: CompetitorCardProps) {
+ * progress bar for quick visual scanning across a grid. Memoized since
+ * these render in a grid that shouldn't re-render on unrelated page state
+ * changes (e.g. typing in the prompt input). */
+function CompetitorCardImpl({ competitor, index = 0 }: CompetitorCardProps) {
   const similarityPct = Math.round(competitor.similarityScore * 100);
 
   return (
@@ -55,3 +58,5 @@ export function CompetitorCard({ competitor, index = 0 }: CompetitorCardProps) {
     </motion.div>
   );
 }
+
+export const CompetitorCard = memo(CompetitorCardImpl);

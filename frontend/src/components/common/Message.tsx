@@ -1,5 +1,6 @@
 import { motion } from "framer-motion";
 import { Sparkles, User } from "lucide-react";
+import { memo } from "react";
 
 import { ChatBubble } from "@/components/common/ChatBubble";
 import type { ChatMessage } from "@/types/chat";
@@ -11,8 +12,10 @@ export interface MessageProps {
 
 /** A single animated conversation turn: avatar + ChatBubble, aligned by
  * role, with a spring entrance so new messages feel alive without being
- * distracting. */
-export function Message({ message }: MessageProps) {
+ * distracting. Memoized: `message` objects are never mutated in place
+ * (see useConversationStore), so earlier messages in a long conversation
+ * skip re-rendering when a new one is appended. */
+function MessageImpl({ message }: MessageProps) {
   const isUser = message.role === "user";
 
   return (
@@ -36,3 +39,5 @@ export function Message({ message }: MessageProps) {
     </motion.div>
   );
 }
+
+export const Message = memo(MessageImpl);

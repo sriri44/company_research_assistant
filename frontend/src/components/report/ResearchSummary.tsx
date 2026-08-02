@@ -15,7 +15,7 @@ export interface ResearchSummaryProps {
  * from, in that order. */
 export function ResearchSummary({ result }: ResearchSummaryProps) {
   return (
-    <div className="space-y-8">
+    <div className="space-y-6">
       <CompanyCard company={result.company} confidence={result.confidence} />
 
       <section aria-labelledby="competitors-heading">
@@ -24,7 +24,7 @@ export function ResearchSummary({ result }: ResearchSummaryProps) {
           Competitor Landscape
         </h3>
         {result.competitors.length > 0 ? (
-          <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
             {result.competitors.map((competitor, index) => (
               <CompetitorCard key={competitor.domain || competitor.name} competitor={competitor} index={index} />
             ))}

@@ -1,5 +1,6 @@
 import { motion } from "framer-motion";
 import { AlertTriangle, Building2, Calendar, MapPin, Phone, ShieldCheck, Users } from "lucide-react";
+import { memo } from "react";
 
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
@@ -31,7 +32,7 @@ export interface CompanyCardProps {
  * completed research result. Meta chips (phone, address, founded, ...)
  * only render when the AI actually found that data — real crawled
  * content is often incomplete, unlike the old mock profiles. */
-export function CompanyCard({ company, confidence }: CompanyCardProps) {
+function CompanyCardImpl({ company, confidence }: CompanyCardProps) {
   const metaItems = buildMetaItems(company);
   const confidencePct = typeof confidence === "number" ? Math.round(confidence * 100) : null;
 
@@ -63,7 +64,7 @@ export function CompanyCard({ company, confidence }: CompanyCardProps) {
           <p className="text-sm leading-relaxed text-muted-foreground">{company.summary}</p>
 
           {metaItems.length > 0 && (
-            <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
+            <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
               {metaItems.map(({ icon: Icon, label, value }) => (
                 <div key={label} className="flex items-center gap-2 rounded-lg bg-secondary/60 px-3 py-2">
                   <Icon className="size-4 shrink-0 text-muted-foreground" />
@@ -97,3 +98,5 @@ export function CompanyCard({ company, confidence }: CompanyCardProps) {
     </motion.div>
   );
 }
+
+export const CompanyCard = memo(CompanyCardImpl);

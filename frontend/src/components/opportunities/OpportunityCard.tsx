@@ -1,5 +1,6 @@
 import { motion } from "framer-motion";
 import { Gauge, LineChart, TrendingUp, Zap } from "lucide-react";
+import { memo } from "react";
 
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
@@ -56,8 +57,9 @@ export interface OpportunityCardProps {
 
 /** The flagship AI Growth Opportunities™ card — priority score as a
  * circular gauge for instant visual weight, impact/complexity as
- * color-coded badges beneath the description. */
-export function OpportunityCard({ opportunity, index = 0 }: OpportunityCardProps) {
+ * color-coded badges beneath the description. Memoized (see
+ * CompetitorCard for why). */
+function OpportunityCardImpl({ opportunity, index = 0 }: OpportunityCardProps) {
   return (
     <motion.div
       initial={{ opacity: 0, y: 16 }}
@@ -114,3 +116,5 @@ export function OpportunityCard({ opportunity, index = 0 }: OpportunityCardProps
     </motion.div>
   );
 }
+
+export const OpportunityCard = memo(OpportunityCardImpl);
