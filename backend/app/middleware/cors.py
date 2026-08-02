@@ -19,4 +19,10 @@ def setup_cors(app: FastAPI, settings: Settings) -> None:
         allow_credentials=True,
         allow_methods=["*"],
         allow_headers=["*"],
+        # Content-Disposition isn't in the CORS "simple response headers"
+        # allowlist, so without this the PDF download's real filename
+        # (report_routes.download_report_pdf) is invisible to frontend JS
+        # across the Netlify/Render origin split — it silently falls back
+        # to a generic name instead of erroring, which makes it easy to miss.
+        expose_headers=["Content-Disposition"],
     )

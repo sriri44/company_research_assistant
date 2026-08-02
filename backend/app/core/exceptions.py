@@ -51,6 +51,11 @@ class ReportGenerationError(AppError):
     http_status = 500
 
 
+class ReportNotReadyError(AppError):
+    code = "REPORT_NOT_READY"
+    http_status = 409
+
+
 class DiscordDeliveryError(AppError):
     code = "DISCORD_DELIVERY_FAILED"
     http_status = 502

@@ -46,7 +46,10 @@ export default function ResearchPage() {
             <StatusIndicator status={sessionStatus} />
           </div>
         </div>
-        <PdfDownloadButton enabled={sessionStatus === "complete" && Boolean(result)} />
+        <PdfDownloadButton
+          reportId={result?.company.id ?? null}
+          enabled={sessionStatus === "complete" && Boolean(result)}
+        />
       </header>
 
       {/* The ONLY scrollable region on this page. overscroll-contain stops
