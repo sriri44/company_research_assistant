@@ -1,0 +1,41 @@
+# Render Blueprint for the AI Company Research Assistant backend.
+#
+# This is a monorepo (backend/ + frontend/), so `rootDir` tells Render
+# where to find requirements.txt and run build/start commands from —
+# without it, Render's auto-detection looks at the repo root and fails
+# to find a Python project.
+#
+# Deploy: https://dashboard.render.com/blueprints -> "New Blueprint
+# Instance" -> select this repository. Render reads this file
+# automatically; no manual service configuration needed.
+#
+# See docs/ARCHITECTURE.md and docs/ROADMAP.md for backend context.
+
+services:
+  - type: web
+    name: company-research-assistant-backend
+    runtime: python
+    plan: free
+    branch: main
+    rootDir: backend
+    buildCommand: pip install -r requirements.txt
+    startCommand: uvicorn app.main:app --host 0.0.0.0 --port $PORT
+    healthCheckPath: /health
+    autoDeploy: true
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.12.0
+      - key: APP_ENV
+        value: production
+      - key: DEBUG
+        value: "false"
+      - key: LOG_LEVEL
+        value: INFO
+      # Secrets — not stored in this file. Render will prompt for these
+      # when the Blueprint is created; set them in the service's
+      # Environment tab afterward. See backend/.env.example for the full
+      # variable list and what each one does.
+      - key: SERPER_API_KEY
+        sync: false
+      - key: OPENROUTER_API_KEY
+        sync: false
