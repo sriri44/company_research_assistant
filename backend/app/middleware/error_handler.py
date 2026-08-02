@@ -15,6 +15,7 @@ from starlette.exceptions import HTTPException as StarletteHTTPException
 from starlette.requests import Request
 from starlette.responses import JSONResponse
 
+from app.core.config import get_settings
 from app.core.exceptions import AppError
 from app.utils.error_helper import build_error_response
 from app.utils.logger import get_logger
@@ -57,9 +58,25 @@ async def unhandled_exception_handler(request: Request, exc: Exception) -> JSONR
         code="INTERNAL_SERVER_ERROR",
         message="An unexpected error occurred.",
     )
-    return JSONResponse(
+    response = JSONResponse(
         status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, content=body.model_dump()
     )
+    _attach_cors_headers(request, response)
+    return response
+
+
+def _attach_cors_headers(request: Request, response: JSONResponse) -> None:
+    """Starlette routes handlers registered for the base `Exception` class
+    through `ServerErrorMiddleware`, which wraps *outside* our
+    `CORSMiddleware` — so, unlike every other error path in this file,
+    this response never passes back through it and never gets CORS
+    headers applied. Without this, an unexpected bug looks like a CORS
+    failure in the browser instead of the real error. Only mirrors the
+    request's Origin back if it's actually on the allow-list."""
+    origin = request.headers.get("origin")
+    if origin and origin in get_settings().cors_allowed_origins:
+        response.headers["Access-Control-Allow-Origin"] = origin
+        response.headers["Access-Control-Allow-Credentials"] = "true"
 
 
 def _code_for_status(status_code: int) -> str:

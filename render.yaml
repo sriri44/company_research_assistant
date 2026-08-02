@@ -18,7 +18,16 @@ services:
     plan: free
     branch: main
     rootDir: backend
-    buildCommand: pip install -r requirements.txt
+    # `playwright install chromium` is required in addition to `pip
+    # install` — Crawl4AI drives a real headless browser, and the pip
+    # package alone doesn't include the browser binary. (Deliberately not
+    # `--with-deps`, which shells out to apt-get and needs root — Render's
+    # native Python build environment doesn't have that, and a failing
+    # apt-get would fail the whole build. If the sandboxed browser is
+    # still missing system shared libraries at runtime, CrawlerService
+    # catches that and the research pipeline degrades gracefully instead
+    # of crashing — see app/crawler/crawl4ai_client.py.)
+    buildCommand: pip install -r requirements.txt && playwright install chromium
     startCommand: uvicorn app.main:app --host 0.0.0.0 --port $PORT
     healthCheckPath: /health
     autoDeploy: true

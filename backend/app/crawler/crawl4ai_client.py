@@ -46,8 +46,19 @@ class Crawl4AIClient:
         self._crawler: AsyncWebCrawler | None = None
 
     async def __aenter__(self) -> Crawl4AIClient:
-        self._crawler = AsyncWebCrawler(config=self._browser_config)
-        await self._crawler.start()
+        crawler = AsyncWebCrawler(config=self._browser_config)
+        try:
+            await crawler.start()
+        except Exception as exc:
+            # Most commonly: the Playwright browser binary isn't installed
+            # (needs `playwright install chromium` in addition to `pip
+            # install`, which is easy to miss in a deploy's build step).
+            # Not a CrawlerError-subclass upstream, so it must be caught
+            # and translated here — otherwise it's an unhandled exception
+            # that skips the rest of the pipeline's graceful degradation.
+            logger.warning("Failed to start crawler browser session: %s", exc.__class__.__name__)
+            raise CrawlerError("Failed to start the crawler browser session.") from exc
+        self._crawler = crawler
         return self
 
     async def __aexit__(self, *_exc_info: object) -> None:

@@ -144,3 +144,47 @@ def test_get_research_returns_404_for_unknown_id(client: TestClient) -> None:
     response = client.get("/api/v1/research/does-not-exist")
 
     assert response.status_code == 404
+
+
+def test_unhandled_exception_still_carries_cors_headers() -> None:
+    """Regression test: Starlette routes bare-`Exception` handlers through
+    `ServerErrorMiddleware`, which sits outside `CORSMiddleware` — without
+    the fix in `error_handler._attach_cors_headers`, an unexpected bug
+    would look like a CORS failure in the browser instead of the real
+    error. A plain `RuntimeError` (not an `AppError`) exercises that path.
+
+    Uses `raise_server_exceptions=False` (unlike the shared `client`
+    fixture) so the TestClient returns the real 500 response instead of
+    re-raising the exception into the test — matching what an actual
+    browser/HTTP client sees in production."""
+    app.dependency_overrides[get_research_report_service] = lambda: _FakeResearchReportService(
+        error=RuntimeError("boom — simulates an unexpected, unhandled failure")
+    )
+    allowed_origin = "http://localhost:5173"
+
+    with TestClient(app, raise_server_exceptions=False) as client:
+        response = client.post(
+            "/api/v1/research",
+            json={"query": "stripe.com"},
+            headers={"Origin": allowed_origin},
+        )
+
+    assert response.status_code == 500
+    assert response.json()["error"]["code"] == "INTERNAL_SERVER_ERROR"
+    assert response.headers.get("access-control-allow-origin") == allowed_origin
+
+
+def test_unhandled_exception_does_not_leak_cors_for_disallowed_origin() -> None:
+    app.dependency_overrides[get_research_report_service] = lambda: _FakeResearchReportService(
+        error=RuntimeError("boom")
+    )
+
+    with TestClient(app, raise_server_exceptions=False) as client:
+        response = client.post(
+            "/api/v1/research",
+            json={"query": "stripe.com"},
+            headers={"Origin": "https://not-an-allowed-origin.example.com"},
+        )
+
+    assert response.status_code == 500
+    assert "access-control-allow-origin" not in response.headers
