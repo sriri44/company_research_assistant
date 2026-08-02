@@ -34,7 +34,13 @@ class Settings(BaseSettings):
 
     # API surface (supports the routers/middleware built in this phase)
     api_prefix: str = "/api/v1"
-    cors_allowed_origins: list[str] = ["http://localhost:5173"]
+    # Local dev (Vite) + the deployed Netlify frontend. Override via the
+    # CORS_ALLOWED_ORIGINS env var (JSON array) for other environments —
+    # see render.yaml.
+    cors_allowed_origins: list[str] = [
+        "http://localhost:5173",
+        "https://ai-poweredresearchautomation-platform.netlify.app",
+    ]
     allowed_hosts: list[str] = ["*"]
 
     # Search — Serper.dev

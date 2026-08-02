@@ -31,6 +31,12 @@ services:
         value: "false"
       - key: LOG_LEVEL
         value: INFO
+      # Kept in sync with the code default in app/core/config.py — this
+      # explicit declaration is belt-and-suspenders so the allowed origin
+      # list is visible/editable from the Render dashboard without a
+      # code change, in case the frontend's deploy URL ever changes.
+      - key: CORS_ALLOWED_ORIGINS
+        value: '["http://localhost:5173","https://ai-poweredresearchautomation-platform.netlify.app"]'
       # Secrets — not stored in this file. Render will prompt for these
       # when the Blueprint is created; set them in the service's
       # Environment tab afterward. See backend/.env.example for the full
