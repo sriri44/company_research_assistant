@@ -1,0 +1,131 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Design tokens — shadcn/ui convention (HSL triples consumed via
+   `hsl(var(--x))` in tailwind.config.ts). Toggled by adding/removing the
+   `.dark` class on <html> — see `useThemeStore` / `useThemeSync`. */
+@layer base {
+  :root {
+    --background: 0 0% 100%;
+    --foreground: 240 10% 8%;
+
+    --card: 0 0% 100%;
+    --card-foreground: 240 10% 8%;
+
+    --popover: 0 0% 100%;
+    --popover-foreground: 240 10% 8%;
+
+    --primary: 255 86% 62%;
+    --primary-foreground: 0 0% 100%;
+
+    --secondary: 240 5% 96%;
+    --secondary-foreground: 240 10% 8%;
+
+    --muted: 240 5% 96%;
+    --muted-foreground: 240 4% 46%;
+
+    --accent: 255 86% 97%;
+    --accent-foreground: 255 86% 40%;
+
+    --destructive: 0 72% 51%;
+    --destructive-foreground: 0 0% 100%;
+
+    --success: 152 60% 40%;
+    --success-foreground: 0 0% 100%;
+
+    --warning: 38 92% 50%;
+    --warning-foreground: 0 0% 100%;
+
+    --border: 240 6% 90%;
+    --input: 240 6% 90%;
+    --ring: 255 86% 62%;
+
+    --radius: 0.75rem;
+  }
+
+  .dark {
+    --background: 240 10% 6%;
+    --foreground: 240 5% 94%;
+
+    --card: 240 9% 9%;
+    --card-foreground: 240 5% 94%;
+
+    --popover: 240 9% 9%;
+    --popover-foreground: 240 5% 94%;
+
+    --primary: 255 92% 76%;
+    --primary-foreground: 240 10% 8%;
+
+    --secondary: 240 6% 14%;
+    --secondary-foreground: 240 5% 94%;
+
+    --muted: 240 6% 14%;
+    --muted-foreground: 240 4% 64%;
+
+    --accent: 255 30% 18%;
+    --accent-foreground: 255 92% 85%;
+
+    --destructive: 0 72% 57%;
+    --destructive-foreground: 0 0% 100%;
+
+    --success: 152 55% 48%;
+    --success-foreground: 240 10% 8%;
+
+    --warning: 38 92% 58%;
+    --warning-foreground: 240 10% 8%;
+
+    --border: 240 6% 18%;
+    --input: 240 6% 18%;
+    --ring: 255 92% 76%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  html {
+    color-scheme: light;
+  }
+
+  html.dark {
+    color-scheme: dark;
+  }
+
+  body {
+    @apply bg-background text-foreground antialiased;
+    font-feature-settings: "cv02", "cv03", "cv04", "cv11";
+  }
+
+  ::selection {
+    @apply bg-primary/20;
+  }
+}
+
+/* Slim, unobtrusive scrollbars for the chat/timeline surfaces. */
+@layer utilities {
+  .scrollbar-thin {
+    scrollbar-width: thin;
+    scrollbar-color: hsl(var(--muted-foreground) / 0.3) transparent;
+  }
+
+  .scrollbar-thin::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+
+  .scrollbar-thin::-webkit-scrollbar-thumb {
+    background-color: hsl(var(--muted-foreground) / 0.3);
+    border-radius: 999px;
+  }
+
+  .scrollbar-thin::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  .text-balance {
+    text-wrap: balance;
+  }
+}

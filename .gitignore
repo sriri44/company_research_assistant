@@ -1,0 +1,36 @@
+# Environment
+.env
+.env.local
+*.env
+!*.env.example
+
+# Node / frontend
+node_modules/
+frontend/dist/
+frontend/.vite/
+*.tsbuildinfo
+*.log
+npm-debug.log*
+
+# Python / backend
+__pycache__/
+*.pyc
+.venv/
+venv/
+*.egg-info/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# Generated reports / build artifacts
+backend/generated_reports/
+*.pdf
+
+# Editor / OS
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+
+# Claude Code local settings (machine-specific, not for sharing)
+.claude/settings.local.json

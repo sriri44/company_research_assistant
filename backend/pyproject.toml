@@ -1,0 +1,37 @@
+[project]
+name = "company-research-assistant-backend"
+version = "0.1.0"
+description = "FastAPI backend for the AI Company Research Assistant"
+requires-python = ">=3.12"
+
+[tool.ruff]
+line-length = 100
+target-version = "py312"
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP", "B"]
+# UP017/UP042/UP046/UP047: PEP695 generics, StrEnum, and datetime.UTC are
+# 3.11+/3.12-only syntax. We deliberately stick to the 3.9+-compatible
+# spellings (Generic[T]/TypeVar, str+Enum, timezone.utc) even though the
+# project targets 3.12+, since they're equally valid there and keep the
+# codebase runnable on the still-common 3.10/3.11 interpreters.
+ignore = ["UP017", "UP042", "UP046", "UP047"]
+
+[tool.ruff.lint.flake8-bugbear]
+# FastAPI's `Depends(...)` (and Query/Path) as a parameter default is the
+# framework's documented pattern, not the mutable-default-argument bug
+# B008 exists to catch.
+extend-immutable-calls = ["fastapi.Depends", "fastapi.Query", "fastapi.Path"]
+
+[tool.black]
+line-length = 100
+target-version = ["py312"]
+
+[tool.mypy]
+python_version = "3.12"
+strict = true
+ignore_missing_imports = true
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+asyncio_mode = "auto"
